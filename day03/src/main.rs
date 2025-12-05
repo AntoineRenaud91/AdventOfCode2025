@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 fn find_largest(line: &str, n: usize) -> i64 {
     let mut nums = vec!['0'; n];
     let ll = line.len();
@@ -29,8 +31,13 @@ fn part2(input: &str) -> i64 {
 
 fn main() {
     let input = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../data/day03.dat"));
+
+    let t = Instant::now();
     println!("Part 1: {}", part1(input));
+    println!("Part 1 took: {:?}", t.elapsed());
+    let t = Instant::now();
     println!("Part 2: {}", part2(input));
+    println!("Part 2 took: {:?}", t.elapsed());
 }
 
 #[cfg(test)]

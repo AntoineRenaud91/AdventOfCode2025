@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 pub fn part1(input: &str) -> u64 {
     input
         .trim()
@@ -63,9 +65,12 @@ pub fn part2(input: &str) -> u64 {
 
 fn main() {
     let input: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../data/day02.dat"));
-
+    let t = Instant::now();
     println!("Part 1: {}", part1(input));
+    println!("Part 1 took: {:?}", t.elapsed());
+    let t = Instant::now();
     println!("Part 2: {}", part2(input));
+    println!("Part 2 took: {:?}", t.elapsed());
 }
 
 #[cfg(test)]

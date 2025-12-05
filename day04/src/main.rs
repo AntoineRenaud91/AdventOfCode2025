@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, time::Instant};
 
 const NEIGHTBORD: [(i64, i64); 8] = [
     (-1, 0),
@@ -67,8 +67,12 @@ fn part2(input: &str) -> u64 {
 
 fn main() {
     let input = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../data/day04.dat"));
+    let t = Instant::now();
     println!("Part 1: {}", part1(input));
+    println!("Part 1 took: {:?}", t.elapsed());
+    let t = Instant::now();
     println!("Part 2: {}", part2(input));
+    println!("Part 2 took: {:?}", t.elapsed());
 }
 
 #[cfg(test)]

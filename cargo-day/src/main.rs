@@ -51,7 +51,9 @@ edition = "2024"
 
     // Create main.rs with template
     let main_rs = format!(
-        r##"fn part1(input: &str) -> u64 {{
+        r##"use std::time::Instant;
+
+fn part1(input: &str) -> u64 {{
     // TODO: Implement part 1
     0
 }}
@@ -63,8 +65,12 @@ fn part2(input: &str) -> u64 {{
 
 fn main() {{
     let input = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../data/{}.dat"));
+    let t = Instant::now();
     println!("Part 1: {{}}", part1(input));
+    println!("Part 1 took: {{:?}}", t.elapsed());
+    let t = Instant::now();
     println!("Part 2: {{}}", part2(input));
+    println!("Part 2 took: {{:?}}", t.elapsed());
 }}
 
 #[cfg(test)]
