@@ -13,7 +13,7 @@ fn part1(input: &str) -> u64 {
             .unwrap()
             .chars()
             .enumerate()
-            .find(|(i, c)| c == &'S')
+            .find(|(_, c)| c == &'S')
             .unwrap()
             .0,
     );
@@ -38,7 +38,7 @@ fn part2(input: &str) -> u64 {
             .unwrap()
             .chars()
             .enumerate()
-            .find(|(i, c)| c == &'S')
+            .find(|(_, c)| c == &'S')
             .unwrap()
             .0,
         1,
