@@ -3,10 +3,7 @@ use std::{
     time::Instant,
 };
 
-use nalgebra::Vector3;
-use ndarray::Array2;
-
-fn parse_input(input: &str) -> Vec<Vector3<f64>> {
+fn parse_input(input: &str) -> Vec<[i64; 3]> {
     input
         .trim()
         .lines()
@@ -15,46 +12,41 @@ fn parse_input(input: &str) -> Vec<Vector3<f64>> {
                 .trim()
                 .split(',')
                 .map(|part| part.trim().parse().unwrap());
-            Vector3::new(
+            [
                 parts.next().unwrap(),
                 parts.next().unwrap(),
                 parts.next().unwrap(),
-            )
+            ]
         })
         .collect()
 }
 
-fn compute_distance_matrix(points: &[Vector3<f64>]) -> Array2<f64> {
-    let n = points.len();
-    let mut dist_matrix = Array2::zeros((n, n));
-    for i in 0..n {
-        for j in i + 1..n {
-            let dist = (points[i] - points[j]).norm();
-            dist_matrix[[i, j]] = dist;
-            dist_matrix[[j, i]] = f64::INFINITY;
-        }
-        dist_matrix[[i, i]] = f64::INFINITY;
-    }
-    dist_matrix
+fn sorted_pair_indices(points: &[[i64; 3]]) -> impl Iterator<Item = [usize; 2]> {
+    let mut indices = (0..points.len())
+        .flat_map(|i| (i + 1..points.len()).map(move |j| [i, j]))
+        .map(|[i, j]| {
+            (
+                [i, j],
+                (points[i][0] - points[j][0]).pow(2)
+                    + (points[i][1] - points[j][1]).pow(2)
+                    + (points[i][2] - points[j][2]).pow(2),
+            )
+        })
+        .collect::<Vec<_>>();
+    indices.sort_by_key(|(_, d)| *d);
+    indices.into_iter().map(|(ind, _)| ind)
 }
 
 fn part1(input: &str, n_junc: usize) -> u64 {
     let points = parse_input(input);
-    let mut dist_matrix = compute_distance_matrix(&points);
     let mut circuits = HashMap::<usize, HashSet<usize>>::from_iter(
         (0..points.len()).map(|i| (i, HashSet::from_iter([i]))),
     );
     let mut map_to_circuit = HashMap::<usize, usize>::from_iter((0..points.len()).map(|i| (i, i)));
     let mut max_circ_id = points.len();
-    for _ in 0..n_junc {
-        let (i_min, j_min) = dist_matrix
-            .indexed_iter()
-            .min_by(|a, b| a.1.partial_cmp(b.1).unwrap())
-            .unwrap()
-            .0;
-        dist_matrix[[i_min, j_min]] = f64::INFINITY;
-        let circ_i_id = *map_to_circuit.get(&i_min).unwrap();
-        let circ_j_id = *map_to_circuit.get(&j_min).unwrap();
+    for [i, j] in sorted_pair_indices(&points).take(n_junc) {
+        let circ_i_id = *map_to_circuit.get(&i).unwrap();
+        let circ_j_id = *map_to_circuit.get(&j).unwrap();
         if circ_i_id == circ_j_id {
             continue;
         }
@@ -77,21 +69,14 @@ fn part1(input: &str, n_junc: usize) -> u64 {
 
 fn part2(input: &str) -> u64 {
     let points = parse_input(input);
-    let mut dist_matrix = compute_distance_matrix(&points);
     let mut circuits = HashMap::<usize, HashSet<usize>>::from_iter(
         (0..points.len()).map(|i| (i, HashSet::from_iter([i]))),
     );
     let mut map_to_circuit = HashMap::<usize, usize>::from_iter((0..points.len()).map(|i| (i, i)));
     let mut max_circ_id = points.len();
-    loop {
-        let (i_min, j_min) = dist_matrix
-            .indexed_iter()
-            .min_by(|a, b| a.1.partial_cmp(b.1).unwrap())
-            .unwrap()
-            .0;
-        dist_matrix[[i_min, j_min]] = f64::INFINITY;
-        let circ_i_id = *map_to_circuit.get(&i_min).unwrap();
-        let circ_j_id = *map_to_circuit.get(&j_min).unwrap();
+    for [i, j] in sorted_pair_indices(&points) {
+        let circ_i_id = *map_to_circuit.get(&i).unwrap();
+        let circ_j_id = *map_to_circuit.get(&j).unwrap();
         if circ_i_id == circ_j_id {
             continue;
         }
@@ -103,9 +88,10 @@ fn part2(input: &str) -> u64 {
         circuits.insert(max_circ_id, new_circ);
         max_circ_id += 1;
         if circuits.len() == 1 {
-            return points[i_min].x as u64 * points[j_min].x as u64;
+            return (points[i][0] * points[j][0]) as u64;
         }
     }
+    unreachable!()
 }
 
 fn main() {
