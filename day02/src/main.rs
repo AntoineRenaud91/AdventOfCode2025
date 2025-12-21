@@ -1,4 +1,4 @@
-use std::time::Instant;
+use std::{path::PathBuf, time::Instant};
 
 pub fn part1(input: &str) -> u64 {
     input
@@ -64,12 +64,17 @@ pub fn part2(input: &str) -> u64 {
 }
 
 fn main() {
-    let input: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../data/day02.dat"));
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap()
+        .join("data")
+        .join("day02.dat");
+    let input = std::fs::read_to_string(path).unwrap();
     let t = Instant::now();
-    println!("Part 1: {}", part1(input));
+    println!("Part 1: {}", part1(&input));
     println!("Part 1 took: {:?}", t.elapsed());
     let t = Instant::now();
-    println!("Part 2: {}", part2(input));
+    println!("Part 2: {}", part2(&input));
     println!("Part 2 took: {:?}", t.elapsed());
 }
 

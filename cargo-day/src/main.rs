@@ -51,7 +51,7 @@ edition = "2024"
 
     // Create main.rs with template
     let main_rs = format!(
-        r##"use std::time::Instant;
+        r##"use std::{{path::PathBuf, time::Instant}};
 
 fn part1(input: &str) -> u64 {{
     // TODO: Implement part 1
@@ -64,12 +64,17 @@ fn part2(input: &str) -> u64 {{
 }}
 
 fn main() {{
-    let input = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../data/{}.dat"));
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap()
+        .join("data")
+        .join("day{}.dat");
+    let input = std::fs::read_to_string(path).unwrap();
     let t = Instant::now();
-    println!("Part 1: {{}}", part1(input));
+    println!("Part 1: {{}}", part1(&input));
     println!("Part 1 took: {{:?}}", t.elapsed());
     let t = Instant::now();
-    println!("Part 2: {{}}", part2(input));
+    println!("Part 2: {{}}", part2(&input));
     println!("Part 2 took: {{:?}}", t.elapsed());
 }}
 

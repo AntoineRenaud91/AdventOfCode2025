@@ -1,4 +1,4 @@
-use std::{ops::RangeInclusive, time::Instant};
+use std::{ops::RangeInclusive, path::PathBuf, time::Instant};
 
 enum QueryResult {
     In(usize),
@@ -125,12 +125,17 @@ fn part2(input: &str) -> u64 {
 }
 
 fn main() {
-    let input = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../data/day05.dat"));
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap()
+        .join("data")
+        .join("day05.dat");
+    let input = std::fs::read_to_string(path).unwrap();
     let t = Instant::now();
-    println!("Part 1: {}", part1(input));
+    println!("Part 1: {}", part1(&input));
     println!("Part 1 took: {:?}", t.elapsed());
     let t = Instant::now();
-    println!("Part 2: {}", part2(input));
+    println!("Part 2: {}", part2(&input));
     println!("Part 2 took: {:?}", t.elapsed());
 }
 
