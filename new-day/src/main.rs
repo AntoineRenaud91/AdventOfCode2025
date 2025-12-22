@@ -10,7 +10,7 @@ fn main() {
     let day_num = if args.len() > 1 {
         &args[1]
     } else {
-        eprintln!("Usage: cargo day <number>");
+        eprintln!("Usage: cargo -r-p new-day -- <number>");
         process::exit(1);
     };
 
@@ -68,7 +68,7 @@ fn main() {{
         .parent()
         .unwrap()
         .join("data")
-        .join("day{}.dat");
+        .join("{}.dat");
     let input = std::fs::read_to_string(path).unwrap();
     let t = Instant::now();
     println!("Part 1: {{}}", part1(&input));
